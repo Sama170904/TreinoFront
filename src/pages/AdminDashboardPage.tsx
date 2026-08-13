@@ -16,6 +16,10 @@ const AdminDashboardPage: React.FC = () => {
     const [alumnosRiesgo, setAlumnosRiesgo] = useState<AlumnoRiesgo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Interactive View Mode Toggles for Executive Clean UX
+    const [occupancyViewMode, setOccupancyViewMode] = useState<'chart' | 'cards'>('chart');
+    const [teacherViewMode, setTeacherViewMode] = useState<'chart' | 'table'>('table');
+
     const loadDashboardStats = async () => {
         setIsLoading(true);
         try {
@@ -56,6 +60,26 @@ const AdminDashboardPage: React.FC = () => {
         }
     };
 
+    const hourlyData = analytics?.ocupacionPorHorario || [
+        { horaEtiqueta: '06:00 - 07:00', totalClases: 2, porcentajeOcupacion: 40, estadoDemanda: 'MEDIA' },
+        { horaEtiqueta: '07:00 - 08:00', totalClases: 4, porcentajeOcupacion: 85, estadoDemanda: 'ALTA' },
+        { horaEtiqueta: '08:00 - 09:00', totalClases: 3, porcentajeOcupacion: 70, estadoDemanda: 'ALTA' },
+        { horaEtiqueta: '09:00 - 10:00', totalClases: 3, porcentajeOcupacion: 60, estadoDemanda: 'MEDIA' },
+        { horaEtiqueta: '10:00 - 11:00', totalClases: 2, porcentajeOcupacion: 35, estadoDemanda: 'BAJA' },
+        { horaEtiqueta: '11:00 - 12:00', totalClases: 1, porcentajeOcupacion: 20, estadoDemanda: 'BAJA' },
+        { horaEtiqueta: '15:00 - 16:00', totalClases: 2, porcentajeOcupacion: 30, estadoDemanda: 'BAJA' },
+        { horaEtiqueta: '16:00 - 17:00', totalClases: 3, porcentajeOcupacion: 50, estadoDemanda: 'MEDIA' },
+        { horaEtiqueta: '17:00 - 18:00', totalClases: 5, porcentajeOcupacion: 75, estadoDemanda: 'ALTA' },
+        { horaEtiqueta: '18:00 - 19:00', totalClases: 4, porcentajeOcupacion: 90, estadoDemanda: 'ALTA' },
+        { horaEtiqueta: '19:00 - 20:00', totalClases: 4, porcentajeOcupacion: 85, estadoDemanda: 'ALTA' },
+        { horaEtiqueta: '20:00 - 21:00', totalClases: 2, porcentajeOcupacion: 45, estadoDemanda: 'MEDIA' }
+    ];
+
+    const teacherData = analytics?.desempenoProfesores || [
+        { profesorId: 1, nombreProfesor: 'Laura Profesor', clasesDictadas: 8, porcentajeLlenado: 88, totalReservas: 96, porcentajeNoShow: 2.1, porcentajeAsistencia: 97.9, alumnosUnicosAtendidos: 34 },
+        { profesorId: 2, nombreProfesor: 'Carlos Ruiz', clasesDictadas: 6, porcentajeLlenado: 72, totalReservas: 60, porcentajeNoShow: 5.0, porcentajeAsistencia: 95.0, alumnosUnicosAtendidos: 22 }
+    ];
+
     return (
         <div className="min-h-screen bg-surface-container-high p-4 sm:p-6 lg:p-10 font-body text-on-surface pb-24 md:pb-12">
             <div className="max-w-7xl mx-auto space-y-8">
@@ -67,7 +91,7 @@ const AdminDashboardPage: React.FC = () => {
                             Panel de Administración & Analítica
                         </h1>
                         <p className="text-on-surface-variant text-sm mt-1">
-                            Supervisión de prevención de abandono, ocupación por horario y rendimiento general.
+                            Supervisión ejecutiva de ocupación por horario, retención por WhatsApp y rendimiento general.
                         </p>
                     </div>
                 </div>
@@ -237,9 +261,9 @@ const AdminDashboardPage: React.FC = () => {
                     )}
                 </section>
 
-                {/* Strategic Analytics Section: Occupancy by Hour */}
+                {/* Strategic Analytics Section: Occupancy by Hour with View Switcher */}
                 <section className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/60 pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/60 pb-4">
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary text-xl">query_stats</span>
@@ -248,134 +272,255 @@ const AdminDashboardPage: React.FC = () => {
                             <p className="text-xs text-slate-500 mt-0.5">Distribución del porcentaje de ocupación de clases agrupado por hora.</p>
                         </div>
 
-                        {/* Legend */}
-                        <div className="flex items-center gap-4 text-xs font-semibold">
-                            <div className="flex items-center gap-1.5">
-                                <span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
-                                <span>Alta (≥70%)</span>
+                        {/* Interactive View Mode Switcher */}
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
+                                <button
+                                    onClick={() => setOccupancyViewMode('chart')}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                                        occupancyViewMode === 'chart' ? 'bg-white text-primary shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">bar_chart</span>
+                                    <span>Gráfico Visual</span>
+                                </button>
+                                <button
+                                    onClick={() => setOccupancyViewMode('cards')}
+                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                                        occupancyViewMode === 'cards' ? 'bg-white text-primary shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">grid_view</span>
+                                    <span>Vista Tarjetas</span>
+                                </button>
                             </div>
-                            <div className="flex items-center gap-1.5">
-                                <span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
-                                <span>Media (40-69%)</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <span className="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
-                                <span>Baja (&lt;40%)</span>
+
+                            {/* Legend */}
+                            <div className="hidden lg:flex items-center gap-3 text-xs font-semibold border-l border-slate-200 pl-3">
+                                <div className="flex items-center gap-1">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+                                    <span>Pico (≥70%)</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                    <span>Media</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                    <span>Baja</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Hourly Occupancy Heatmap Bar Charts */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {(analytics?.ocupacionPorHorario || [
-                            { horaEtiqueta: '07:00 - 08:00', totalClases: 4, porcentajeOcupacion: 85, estadoDemanda: 'ALTA' },
-                            { horaEtiqueta: '09:00 - 10:00', totalClases: 3, porcentajeOcupacion: 60, estadoDemanda: 'MEDIA' },
-                            { horaEtiqueta: '15:00 - 16:00', totalClases: 2, porcentajeOcupacion: 30, estadoDemanda: 'BAJA' },
-                            { horaEtiqueta: '17:00 - 18:00', totalClases: 5, porcentajeOcupacion: 75, estadoDemanda: 'ALTA' },
-                            { horaEtiqueta: '19:00 - 20:00', totalClases: 4, porcentajeOcupacion: 90, estadoDemanda: 'ALTA' }
-                        ]).map((item, idx) => {
-                            const isHigh = item.estadoDemanda === 'ALTA';
-                            const isLow = item.estadoDemanda === 'BAJA';
+                    {/* View Option 1: Executive Visual SVG Bar Chart */}
+                    {occupancyViewMode === 'chart' ? (
+                        <div className="p-4 bg-slate-900 rounded-2xl text-white space-y-4 shadow-inner">
+                            <div className="flex justify-between items-center text-xs font-semibold text-slate-400 border-b border-slate-800 pb-3">
+                                <span className="flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-sm text-primary">ssid_chart</span>
+                                    Curva de Ocupación por Hora (06:00 - 21:00)
+                                </span>
+                                <span>100% Capacidad Máxima</span>
+                            </div>
 
-                            return (
-                                <div key={idx} className="p-4 bg-surface-container-low rounded-xl border border-outline-variant/50 space-y-3">
-                                    <div className="flex justify-between items-center">
-                                        <div className="flex items-center gap-2">
-                                            <span className="material-symbols-outlined text-sm text-slate-500">schedule</span>
-                                            <span className="font-headline font-bold text-xs text-slate-900">{item.horaEtiqueta}</span>
+                            {/* Responsive Vertical Bar Chart */}
+                            <div className="h-56 flex items-end justify-between gap-1.5 sm:gap-3 pt-6 pb-2 px-2 overflow-x-auto">
+                                {hourlyData.map((item, idx) => {
+                                    const pct = item.porcentajeOcupacion;
+                                    const isHigh = pct >= 70;
+                                    const isLow = pct < 40;
+
+                                    return (
+                                        <div key={idx} className="flex-1 flex flex-col items-center gap-2 group min-w-[28px] relative">
+                                            {/* Hover Tooltip */}
+                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-slate-800 text-white text-[10px] font-bold py-1 px-2 rounded shadow-lg pointer-events-none z-10 whitespace-nowrap border border-slate-700">
+                                                {item.horaEtiqueta}: {pct}% ({item.totalClases} clases)
+                                            </div>
+
+                                            {/* Value Label above Bar */}
+                                            <span className={`text-[10px] font-extrabold ${
+                                                isHigh ? 'text-red-400' : isLow ? 'text-blue-400' : 'text-amber-400'
+                                            }`}>
+                                                {pct}%
+                                            </span>
+
+                                            {/* Animated Bar Column */}
+                                            <div className="w-full bg-slate-800 rounded-t-lg h-36 flex items-end p-0.5 overflow-hidden">
+                                                <div
+                                                    className={`w-full rounded-t-md transition-all duration-500 group-hover:brightness-125 ${
+                                                        isHigh
+                                                            ? 'bg-gradient-to-t from-red-600 to-red-400'
+                                                            : isLow
+                                                            ? 'bg-gradient-to-t from-blue-600 to-blue-400'
+                                                            : 'bg-gradient-to-t from-amber-600 to-amber-400'
+                                                    }`}
+                                                    style={{ height: `${Math.max(8, pct)}%` }}
+                                                ></div>
+                                            </div>
+
+                                            {/* Hour Tag */}
+                                            <span className="text-[10px] text-slate-400 font-mono rotate-45 sm:rotate-0 origin-left mt-1">
+                                                {item.horaEtiqueta.split(' - ')[0]}
+                                            </span>
                                         </div>
-                                        <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${
-                                            isHigh ? 'bg-red-100 text-red-700' : isLow ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-800'
-                                        }`}>
-                                            {item.porcentajeOcupacion}% Ocupación
-                                        </span>
-                                    </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    ) : (
+                        /* View Option 2: Clean Card Grid */
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {hourlyData.map((item, idx) => {
+                                const isHigh = item.estadoDemanda === 'ALTA';
+                                const isLow = item.estadoDemanda === 'BAJA';
 
-                                    {/* Progress Bar */}
-                                    <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
-                                        <div
-                                            className={`h-2.5 rounded-full transition-all ${
-                                                isHigh ? 'bg-red-500' : isLow ? 'bg-blue-500' : 'bg-amber-500'
-                                            }`}
-                                            style={{ width: `${Math.max(5, item.porcentajeOcupacion)}%` }}
-                                        ></div>
-                                    </div>
+                                return (
+                                    <div key={idx} className="p-4 bg-surface-container-low rounded-xl border border-outline-variant/50 space-y-3">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex items-center gap-2">
+                                                <span className="material-symbols-outlined text-sm text-slate-500">schedule</span>
+                                                <span className="font-headline font-bold text-xs text-slate-900">{item.horaEtiqueta}</span>
+                                            </div>
+                                            <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${
+                                                isHigh ? 'bg-red-100 text-red-700' : isLow ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-800'
+                                            }`}>
+                                                {item.porcentajeOcupacion}% Ocupación
+                                            </span>
+                                        </div>
 
-                                    <div className="flex justify-between text-[11px] text-slate-500 font-medium">
-                                        <span>{item.totalClases} {item.totalClases === 1 ? 'clase programada' : 'clases programadas'}</span>
-                                        <span className="font-semibold text-slate-700">{item.estadoDemanda === 'ALTA' ? 'Demanda Alta' : item.estadoDemanda === 'BAJA' ? 'Demanda Baja' : 'Demanda Media'}</span>
+                                        {/* Progress Bar */}
+                                        <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                            <div
+                                                className={`h-2.5 rounded-full transition-all ${
+                                                    isHigh ? 'bg-red-500' : isLow ? 'bg-blue-500' : 'bg-amber-500'
+                                                }`}
+                                                style={{ width: `${Math.max(5, item.porcentajeOcupacion)}%` }}
+                                            ></div>
+                                        </div>
+
+                                        <div className="flex justify-between text-[11px] text-slate-500 font-medium">
+                                            <span>{item.totalClases} {item.totalClases === 1 ? 'clase programada' : 'clases programadas'}</span>
+                                            <span className="font-semibold text-slate-700">{item.estadoDemanda === 'ALTA' ? 'Demanda Alta' : item.estadoDemanda === 'BAJA' ? 'Demanda Baja' : 'Demanda Media'}</span>
+                                        </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
                 </section>
 
-                {/* Teacher Performance & Student Retention Section */}
+                {/* Teacher Performance Section with View Switcher */}
                 <section className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant space-y-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/60 pb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/60 pb-4">
                         <div>
                             <div className="flex items-center gap-2">
                                 <span className="material-symbols-outlined text-primary text-xl">workspace_premium</span>
-                                <h2 className="font-headline font-bold text-lg text-slate-900">Desempeño de Instructores y Retención de Alumnos</h2>
+                                <h2 className="font-headline font-bold text-lg text-slate-900">Desempeño de Instructores y Retención</h2>
                             </div>
                             <p className="text-xs text-slate-500 mt-0.5">Reportes de ocupación de clases, tasa de asistencia y retención por profesor.</p>
                         </div>
+
+                        {/* Interactive View Switcher for Teachers */}
+                        <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold shrink-0">
+                            <button
+                                onClick={() => setTeacherViewMode('table')}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                                    teacherViewMode === 'table' ? 'bg-white text-primary shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                <span className="material-symbols-outlined text-base">table_chart</span>
+                                <span>Vista Tabla</span>
+                            </button>
+                            <button
+                                onClick={() => setTeacherViewMode('chart')}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                                    teacherViewMode === 'chart' ? 'bg-white text-primary shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                <span className="material-symbols-outlined text-base">equalizer</span>
+                                <span>Comparativa Gráfica</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse min-w-[650px]">
-                            <thead>
-                                <tr className="border-b border-outline-variant bg-surface-container-low text-xs font-label font-bold text-slate-500 uppercase tracking-wider">
-                                    <th className="py-3 px-4">Instructor</th>
-                                    <th className="py-3 px-4 text-center">Clases Dictadas</th>
-                                    <th className="py-3 px-4 text-center">Llenado Promedio</th>
-                                    <th className="py-3 px-4 text-center">Tasa Asistencia</th>
-                                    <th className="py-3 px-4 text-center">No-Shows</th>
-                                    <th className="py-3 px-4 text-center">Alumnos Únicos</th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-outline-variant/60 text-sm">
-                                {(analytics?.desempenoProfesores || [
-                                    { profesorId: 1, nombreProfesor: 'Laura Profesor', clasesDictadas: 8, porcentajeLlenado: 88, totalReservas: 96, porcentajeNoShow: 2.1, porcentajeAsistencia: 97.9, alumnosUnicosAtendidos: 34 }
-                                ]).map((p) => (
-                                    <tr key={p.profesorId} className="hover:bg-slate-50/80 transition-colors">
-                                        <td className="py-3.5 px-4 font-semibold text-slate-900 flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-primary-container text-primary font-bold flex items-center justify-center text-xs">
-                                                {p.nombreProfesor.charAt(0)}
-                                            </div>
-                                            <div>
-                                                <p className="text-sm font-bold text-slate-900">{p.nombreProfesor}</p>
-                                                <p className="text-[11px] text-slate-500 font-normal">Instructor</p>
-                                            </div>
-                                        </td>
-                                        <td className="py-3.5 px-4 text-center font-mono font-semibold text-slate-700">
-                                            {p.clasesDictadas}
-                                        </td>
-                                        <td className="py-3.5 px-4 text-center">
-                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
-                                                <span className="material-symbols-outlined text-xs">trending_up</span>
-                                                {p.porcentajeLlenado}%
-                                            </span>
-                                        </td>
-                                        <td className="py-3.5 px-4 text-center font-bold text-slate-800 font-mono">
-                                            {p.porcentajeAsistencia}%
-                                        </td>
-                                        <td className="py-3.5 px-4 text-center">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-                                                p.porcentajeNoShow > 10 ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-600'
-                                            }`}>
-                                                {p.porcentajeNoShow}%
-                                            </span>
-                                        </td>
-                                        <td className="py-3.5 px-4 text-center font-semibold text-slate-800">
-                                            {p.alumnosUnicosAtendidos} alumnos
-                                        </td>
+                    {teacherViewMode === 'table' ? (
+                        /* Table View */
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[650px]">
+                                <thead>
+                                    <tr className="border-b border-outline-variant bg-surface-container-low text-xs font-label font-bold text-slate-500 uppercase tracking-wider">
+                                        <th className="py-3 px-4">Instructor</th>
+                                        <th className="py-3 px-4 text-center">Clases Dictadas</th>
+                                        <th className="py-3 px-4 text-center">Llenado Promedio</th>
+                                        <th className="py-3 px-4 text-center">Tasa Asistencia</th>
+                                        <th className="py-3 px-4 text-center">No-Shows</th>
+                                        <th className="py-3 px-4 text-center">Alumnos Únicos</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
+                                </thead>
+                                <tbody className="divide-y divide-outline-variant/60 text-sm">
+                                    {teacherData.map((p) => (
+                                        <tr key={p.profesorId} className="hover:bg-slate-50/80 transition-colors">
+                                            <td className="py-3.5 px-4 font-semibold text-slate-900 flex items-center gap-3">
+                                                <div className="w-8 h-8 rounded-full bg-primary-container text-primary font-bold flex items-center justify-center text-xs">
+                                                    {p.nombreProfesor.charAt(0)}
+                                                </div>
+                                                <div>
+                                                    <p className="text-sm font-bold text-slate-900">{p.nombreProfesor}</p>
+                                                    <p className="text-[11px] text-slate-500 font-normal">Instructor</p>
+                                                </div>
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center font-mono font-semibold text-slate-700">
+                                                {p.clasesDictadas}
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center">
+                                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
+                                                    <span className="material-symbols-outlined text-xs">trending_up</span>
+                                                    {p.porcentajeLlenado}%
+                                                </span>
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center font-bold text-slate-800 font-mono">
+                                                {p.porcentajeAsistencia}%
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center">
+                                                <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                    p.porcentajeNoShow > 10 ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-600'
+                                                }`}>
+                                                    {p.porcentajeNoShow}%
+                                                </span>
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center font-semibold text-slate-800">
+                                                {p.alumnosUnicosAtendidos} alumnos
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        /* Horizontal Visual Comparison Chart */
+                        <div className="space-y-4 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                            <p className="text-xs font-bold text-slate-600 uppercase tracking-wider">Porcentaje de Llenado por Instructor</p>
+                            {teacherData.map((p) => (
+                                <div key={p.profesorId} className="space-y-1.5 bg-white p-3.5 rounded-xl border border-slate-200">
+                                    <div className="flex justify-between items-center text-xs">
+                                        <span className="font-bold text-slate-900">{p.nombreProfesor}</span>
+                                        <span className="font-extrabold text-primary">{p.porcentajeLlenado}% Llenado ({p.clasesDictadas} clases)</span>
+                                    </div>
+                                    <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+                                        <div
+                                            className="bg-gradient-to-r from-primary to-purple-600 h-3 rounded-full transition-all"
+                                            style={{ width: `${Math.max(5, p.porcentajeLlenado)}%` }}
+                                        ></div>
+                                    </div>
+                                    <div className="flex justify-between text-[11px] text-slate-500 font-medium pt-1">
+                                        <span>Retención: {p.alumnosUnicosAtendidos} alumnos únicos</span>
+                                        <span>Asistencia efectiva: {p.porcentajeAsistencia}%</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </section>
 
                 {/* Quick Actions Grid */}
