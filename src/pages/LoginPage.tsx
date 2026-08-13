@@ -59,9 +59,7 @@ const LoginPage: React.FC = () => {
                     {/* Error Alert */}
                     {errorMsg && (
                         <div className="mx-6 sm:mx-8 mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl text-sm flex items-center gap-2 animate-in">
-                            <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
+                            <span className="material-symbols-outlined text-red-500 text-lg shrink-0">error</span>
                             <span>{errorMsg}</span>
                         </div>
                     )}
@@ -70,16 +68,14 @@ const LoginPage: React.FC = () => {
                     <form onSubmit={handleSubmit} className="px-6 sm:px-8 pb-8 space-y-5">
                         <div className="space-y-4">
                             
-                            {/* Email / Person Field */}
+                            {/* Email / User Field */}
                             <div>
                                 <label className="block font-label text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider" htmlFor="email">
                                     Correo electrónico
                                 </label>
-                                <div className="relative flex items-center">
-                                    <div className="absolute left-3.5 z-10 flex items-center pointer-events-none text-slate-400">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
+                                <div className="flex items-center w-full bg-surface border border-outline-variant rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
+                                    <div className="pl-3.5 pr-2 text-on-surface-variant flex items-center justify-center shrink-0 pointer-events-none select-none">
+                                        <span className="material-symbols-outlined text-xl">mail</span>
                                     </div>
                                     <input
                                         id="email"
@@ -88,8 +84,7 @@ const LoginPage: React.FC = () => {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="admin@treino.com"
-                                        className="block w-full border border-outline-variant rounded-xl bg-surface text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors font-body text-sm py-3"
-                                        style={{ paddingLeft: '3rem', paddingRight: '1rem' }}
+                                        className="w-full bg-transparent border-0 outline-none focus:outline-none focus:ring-0 py-3 pr-3.5 text-on-surface font-body text-sm placeholder-on-surface-variant/50"
                                     />
                                 </div>
                             </div>
@@ -99,11 +94,9 @@ const LoginPage: React.FC = () => {
                                 <label className="block font-label text-xs font-semibold text-on-surface mb-1.5 uppercase tracking-wider" htmlFor="password">
                                     Contraseña
                                 </label>
-                                <div className="relative flex items-center">
-                                    <div className="absolute left-3.5 z-10 flex items-center pointer-events-none text-slate-400">
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                        </svg>
+                                <div className="flex items-center w-full bg-surface border border-outline-variant rounded-xl focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary transition-all overflow-hidden">
+                                    <div className="pl-3.5 pr-2 text-on-surface-variant flex items-center justify-center shrink-0 pointer-events-none select-none">
+                                        <span className="material-symbols-outlined text-xl">lock</span>
                                     </div>
                                     <input
                                         id="password"
@@ -112,25 +105,17 @@ const LoginPage: React.FC = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="••••••••"
-                                        className="block w-full border border-outline-variant rounded-xl bg-surface text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors font-body text-sm py-3"
-                                        style={{ paddingLeft: '3rem', paddingRight: '3rem' }}
+                                        className="w-full bg-transparent border-0 outline-none focus:outline-none focus:ring-0 py-3 text-on-surface font-body text-sm placeholder-on-surface-variant/50"
                                     />
                                     <button
                                         type="button"
                                         onClick={() => setShowPassword(!showPassword)}
-                                        className="absolute right-3.5 z-10 flex items-center text-slate-400 hover:text-primary transition-colors focus:outline-none"
+                                        className="px-3.5 text-on-surface-variant hover:text-primary transition-colors focus:outline-none shrink-0 flex items-center justify-center"
                                         title={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                                     >
-                                        {showPassword ? (
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.858A9.954 9.954 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m-4.59-4.59a3 3 0 10-4.243-4.243m4.242 4.242L3 3l18 18" />
-                                            </svg>
-                                        ) : (
-                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        )}
+                                        <span className="material-symbols-outlined text-xl">
+                                            {showPassword ? 'visibility_off' : 'visibility'}
+                                        </span>
                                     </button>
                                 </div>
                             </div>
@@ -145,18 +130,13 @@ const LoginPage: React.FC = () => {
                             >
                                 {isLoading ? (
                                     <>
-                                        <svg className="w-5 h-5 animate-spin text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
+                                        <span className="animate-spin material-symbols-outlined text-xl">progress_activity</span>
                                         <span>Iniciando sesión...</span>
                                     </>
                                 ) : (
                                     <>
                                         <span>Iniciar Sesión</span>
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                        </svg>
+                                        <span className="material-symbols-outlined text-xl">arrow_forward</span>
                                     </>
                                 )}
                             </button>
