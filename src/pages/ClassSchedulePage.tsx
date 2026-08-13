@@ -6,6 +6,14 @@ import type { ClaseResponse } from '../types/clase.types';
 import type { ReservaResponse } from '../types/reserva.types';
 import type { SedeResponse } from '../types/sede.types';
 
+// Utility to get YYYY-MM-DD string in local timezone
+const getLocalDateString = (dateObj: Date = new Date()): string => {
+    const year = dateObj.getFullYear();
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 const ClassSchedulePage: React.FC = () => {
     const [clases, setClases] = useState<ClaseResponse[]>([]);
     const [misReservas, setMisReservas] = useState<ReservaResponse[]>([]);
@@ -15,10 +23,11 @@ const ClassSchedulePage: React.FC = () => {
     const [errorMsg, setErrorMsg] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-    // Filter States
+    // Filter States (Default selectedDate to TODAY)
     const [searchFilter, setSearchFilter] = useState('');
     const [selectedSede, setSelectedSede] = useState<string>('');
     const [selectedProfesor, setSelectedProfesor] = useState<string>('');
+    const [selectedDate, setSelectedDate] = useState<string>(getLocalDateString());
 
     const loadData = async () => {
         setIsLoading(true);
@@ -72,6 +81,17 @@ const ClassSchedulePage: React.FC = () => {
         setSearchFilter('');
         setSelectedSede('');
         setSelectedProfesor('');
+        setSelectedDate('');
+    };
+
+    const handleSetToday = () => {
+        setSelectedDate(getLocalDateString());
+    };
+
+    const handleSetTomorrow = () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        setSelectedDate(getLocalDateString(tomorrow));
     };
 
     // Set of numeric class IDs reserved by current user with CONFIRMADA status
@@ -107,11 +127,19 @@ const ClassSchedulePage: React.FC = () => {
             const prof = c.profesorNombre || (c.profesor ? `${c.profesor.nombre} ${c.profesor.apellido}`.trim() : '');
             const query = searchFilter.toLowerCase();
 
+            // Date filtering
+            let classDateStr = '';
+            if (c.fechaHoraInicio) {
+                const d = new Date(c.fechaHoraInicio);
+                classDateStr = getLocalDateString(d);
+            }
+
             const matchesQuery = !query || disc.toLowerCase().includes(query) || sede.toLowerCase().includes(query) || prof.toLowerCase().includes(query);
             const matchesSede = !selectedSede || sede === selectedSede;
             const matchesProfesor = !selectedProfesor || prof === selectedProfesor;
+            const matchesDate = !selectedDate || classDateStr === selectedDate;
 
-            return matchesQuery && matchesSede && matchesProfesor;
+            return matchesQuery && matchesSede && matchesProfesor && matchesDate;
         })
         .sort((a, b) => {
             const timeA = a.fechaHoraInicio ? new Date(a.fechaHoraInicio).getTime() : 0;
@@ -119,10 +147,11 @@ const ClassSchedulePage: React.FC = () => {
             return timeA - timeB;
         });
 
-    const hasActiveFilters = Boolean(searchFilter || selectedSede || selectedProfesor);
+    const isTodaySelected = selectedDate === getLocalDateString();
+    const hasActiveFilters = Boolean(searchFilter || selectedSede || selectedProfesor || selectedDate);
 
     return (
-        <div className="min-h-screen bg-surface-container-high p-6 lg:p-10 font-body text-on-surface pb-24 md:pb-12">
+        <div className="min-h-screen bg-surface-container-high p-4 sm:p-6 lg:p-10 font-body text-on-surface pb-24 md:pb-12">
             <div className="max-w-7xl mx-auto space-y-6">
                 
                 {/* Header */}
@@ -130,6 +159,45 @@ const ClassSchedulePage: React.FC = () => {
                     <div>
                         <h1 className="font-headline text-2xl font-extrabold text-slate-900">Horarios de Clases</h1>
                         <p className="text-on-surface-variant text-sm mt-0.5">Explora y reserva tus sesiones de entrenamiento ordenadas por horario.</p>
+                    </div>
+
+                    {/* Quick Date Shortcuts */}
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={handleSetToday}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm ${
+                                isTodaySelected
+                                    ? 'bg-primary text-white shadow-primary/20'
+                                    : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-base">today</span>
+                            <span>Clases de Hoy</span>
+                        </button>
+
+                        <button
+                            onClick={handleSetTomorrow}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm ${
+                                selectedDate === getLocalDateString(new Date(Date.now() + 86400000))
+                                    ? 'bg-primary text-white shadow-primary/20'
+                                    : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-base">event</span>
+                            <span>Mañana</span>
+                        </button>
+
+                        <button
+                            onClick={() => setSelectedDate('')}
+                            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 shadow-sm ${
+                                !selectedDate
+                                    ? 'bg-slate-900 text-white'
+                                    : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
+                            }`}
+                        >
+                            <span className="material-symbols-outlined text-base">date_range</span>
+                            <span>Todas las Fechas</span>
+                        </button>
                     </div>
                 </div>
 
@@ -168,13 +236,25 @@ const ClassSchedulePage: React.FC = () => {
                             type="text"
                             value={searchFilter}
                             onChange={(e) => setSearchFilter(e.target.value)}
-                            placeholder="Buscar por disciplina o palabra clave..."
+                            placeholder="Buscar disciplina..."
                             className="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-slate-900"
                         />
                     </div>
 
+                    {/* Date Picker Filter */}
+                    <div className="relative w-full md:w-48">
+                        <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">calendar_today</span>
+                        <input
+                            type="date"
+                            value={selectedDate}
+                            onChange={(e) => setSelectedDate(e.target.value)}
+                            aria-label="Filtrar por Fecha"
+                            className="w-full pl-10 pr-3 py-2 border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-slate-900 cursor-pointer"
+                        />
+                    </div>
+
                     {/* Sede Dropdown Filter */}
-                    <div className="relative w-full md:w-56">
+                    <div className="relative w-full md:w-52">
                         <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">location_on</span>
                         <select
                             value={selectedSede}
@@ -191,7 +271,7 @@ const ClassSchedulePage: React.FC = () => {
                     </div>
 
                     {/* Profesor Dropdown Filter */}
-                    <div className="relative w-full md:w-56">
+                    <div className="relative w-full md:w-52">
                         <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">person</span>
                         <select
                             value={selectedProfesor}
@@ -230,18 +310,33 @@ const ClassSchedulePage: React.FC = () => {
                     <div className="p-16 text-center bg-surface rounded-2xl border border-outline-variant text-on-surface-variant space-y-3">
                         <span className="material-symbols-outlined text-5xl opacity-40">event_busy</span>
                         <div>
-                            <p className="font-semibold text-slate-700 text-base">No se encontraron clases con los filtros aplicados</p>
-                            <p className="text-xs text-slate-500 mt-1">Intenta seleccionar otra sede, profesor o borra los filtros de búsqueda.</p>
+                            <p className="font-semibold text-slate-700 text-base">
+                                {selectedDate
+                                    ? `No se encontraron clases programadas para ${isTodaySelected ? 'el día de hoy' : selectedDate}`
+                                    : 'No se encontraron clases con los filtros aplicados'}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-1">Intenta cambiar la fecha, seleccionar otra sede o ver todas las clases disponibles.</p>
                         </div>
-                        {hasActiveFilters && (
-                            <button
-                                onClick={handleClearFilters}
-                                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition-colors"
-                            >
-                                <span className="material-symbols-outlined text-sm">filter_alt_off</span>
-                                Restablecer Filtros
-                            </button>
-                        )}
+                        <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                            {selectedDate && (
+                                <button
+                                    onClick={() => setSelectedDate('')}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-white text-xs font-bold hover:bg-primary-hover transition-colors shadow-sm"
+                                >
+                                    <span className="material-symbols-outlined text-sm">date_range</span>
+                                    Ver Clases de Todas las Fechas
+                                </button>
+                            )}
+                            {hasActiveFilters && (
+                                <button
+                                    onClick={handleClearFilters}
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold hover:bg-slate-200 transition-colors"
+                                >
+                                    <span className="material-symbols-outlined text-sm">filter_alt_off</span>
+                                    Restablecer Todos los Filtros
+                                </button>
+                            )}
+                        </div>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
