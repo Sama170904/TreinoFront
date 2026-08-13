@@ -81,6 +81,7 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  touch-action: manipulation;
 }
 
 body {
@@ -543,9 +544,18 @@ a:hover {
   font-size: 0.875rem;
 }
 
-/* ─── Comprehensive Mobile Responsive Gutters, Spacing & Compact Dock Clearance ─── */
+/* ─── Comprehensive Mobile Responsive Gutters & Auto-Zoom Prevention ─── */
 @media (max-width: 768px) {
-  /* Balanced 16px side padding and compact 50px bottom scroll clearance for floating mobile navbar */
+  /* Prevent iOS Safari auto-zoom when focusing inputs */
+  .form-control,
+  .form-select,
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  /* Balanced 16px side padding and compact 50px bottom scroll clearance */
   body {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
@@ -604,8 +614,6 @@ a:hover {
   }
 
   /* Touch-friendly inputs and buttons */
-  .form-control,
-  .form-select,
   .btn-treino,
   button[type="submit"] {
     min-height: 44px;
