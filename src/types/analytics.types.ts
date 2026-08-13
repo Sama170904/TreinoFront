@@ -2,8 +2,7 @@ export interface HoraOcupacion {
     horaEtiqueta: string;
     totalClases: number;
     porcentajeOcupacion: number;
-    estadoDemanda: 'PICO' | 'NORMAL' | 'BAJA';
-    recomendacionEstrategica: string;
+    estadoDemanda: 'ALTA' | 'MEDIA' | 'BAJA';
 }
 
 export interface ProfesorDesempeno {
