@@ -170,132 +170,158 @@ const Navbar: React.FC = () => {
                 </div>
             </header>
 
-            {/* Native Mobile Bottom Navigation Bar (Ultra-responsive for mobile screens < 768px) */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-lg border-t border-outline-variant shadow-lg px-1 py-1">
-                <nav className="flex justify-around items-center h-14 w-full">
-                    {usuario.rol === 'CLIENTE' && (
-                        <>
-                            <Link
-                                to="/clases"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/clases') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">calendar_month</span>
-                                <span className="truncate w-full text-center">Clases</span>
-                            </Link>
-                            <Link
-                                to="/mis-reservas"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/mis-reservas') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">confirmation_number</span>
-                                <span className="truncate w-full text-center">Reservas</span>
-                            </Link>
-                            <Link
-                                to="/creditos"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/creditos') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">account_balance_wallet</span>
-                                <span className="truncate w-full text-center">Créditos</span>
-                            </Link>
-                            <Link
-                                to="/profile"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">person</span>
-                                <span className="truncate w-full text-center">Perfil</span>
-                            </Link>
-                        </>
-                    )}
+            {/* Hyper-Modern Floating Glassmorphism Mobile Bottom Navigation Dock */}
+            <div className="md:hidden fixed bottom-3 left-3 right-3 z-50">
+                <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-1 shadow-2xl shadow-purple-950/40">
+                    <nav className="flex justify-between items-center h-12 w-full gap-1">
+                        {usuario.rol === 'CLIENTE' && (
+                            <>
+                                <Link
+                                    to="/clases"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/clases')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">calendar_month</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Clases</span>
+                                </Link>
+                                <Link
+                                    to="/mis-reservas"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/mis-reservas')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">confirmation_number</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Reservas</span>
+                                </Link>
+                                <Link
+                                    to="/creditos"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/creditos')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">account_balance_wallet</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Créditos</span>
+                                </Link>
+                                <Link
+                                    to="/profile"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/profile')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">person</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Perfil</span>
+                                </Link>
+                            </>
+                        )}
 
-                    {usuario.rol === 'PROFESOR' && (
-                        <>
-                            <Link
-                                to="/teacher/clases"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/teacher/clases') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">event_note</span>
-                                <span className="truncate w-full text-center">Clases</span>
-                            </Link>
-                            <Link
-                                to="/teacher/check-in"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/teacher/check-in') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">how_to_reg</span>
-                                <span className="truncate w-full text-center">Pase Lista</span>
-                            </Link>
-                            <Link
-                                to="/profile"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
-                                    isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-xl">person</span>
-                                <span className="truncate w-full text-center">Perfil</span>
-                            </Link>
-                        </>
-                    )}
+                        {usuario.rol === 'PROFESOR' && (
+                            <>
+                                <Link
+                                    to="/teacher/clases"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/teacher/clases')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">event_note</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Clases</span>
+                                </Link>
+                                <Link
+                                    to="/teacher/check-in"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/teacher/check-in')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">how_to_reg</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Lista</span>
+                                </Link>
+                                <Link
+                                    to="/profile"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/profile')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-lg">person</span>
+                                    <span className="text-[10px] font-label tracking-tight truncate max-w-[60px]">Perfil</span>
+                                </Link>
+                            </>
+                        )}
 
-                    {usuario.rol === 'ADMINISTRADOR' && (
-                        <>
-                            <Link
-                                to="/admin"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
-                                    isActive('/admin') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg sm:text-xl">dashboard</span>
-                                <span className="truncate w-full text-center">Dash</span>
-                            </Link>
-                            <Link
-                                to="/admin/sedes"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
-                                    isActive('/admin/sedes') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg sm:text-xl">storefront</span>
-                                <span className="truncate w-full text-center">Sedes</span>
-                            </Link>
-                            <Link
-                                to="/admin/usuarios"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
-                                    isActive('/admin/usuarios') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg sm:text-xl">group</span>
-                                <span className="truncate w-full text-center">Users</span>
-                            </Link>
-                            <Link
-                                to="/teacher/clases"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
-                                    isActive('/teacher/clases') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg sm:text-xl">event_note</span>
-                                <span className="truncate w-full text-center">Clases</span>
-                            </Link>
-                            <Link
-                                to="/profile"
-                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
-                                    isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'
-                                }`}
-                            >
-                                <span className="material-symbols-outlined text-lg sm:text-xl">person</span>
-                                <span className="truncate w-full text-center">Perfil</span>
-                            </Link>
-                        </>
-                    )}
-                </nav>
+                        {usuario.rol === 'ADMINISTRADOR' && (
+                            <>
+                                <Link
+                                    to="/admin"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/admin')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">dashboard</span>
+                                    <span className="text-[9px] font-label tracking-tight truncate max-w-[50px]">Dash</span>
+                                </Link>
+                                <Link
+                                    to="/admin/sedes"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/admin/sedes')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">storefront</span>
+                                    <span className="text-[9px] font-label tracking-tight truncate max-w-[50px]">Sedes</span>
+                                </Link>
+                                <Link
+                                    to="/admin/usuarios"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/admin/usuarios')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">group</span>
+                                    <span className="text-[9px] font-label tracking-tight truncate max-w-[50px]">Users</span>
+                                </Link>
+                                <Link
+                                    to="/teacher/clases"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/teacher/clases')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">event_note</span>
+                                    <span className="text-[9px] font-label tracking-tight truncate max-w-[50px]">Clases</span>
+                                </Link>
+                                <Link
+                                    to="/profile"
+                                    className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
+                                        isActive('/profile')
+                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
+                                            : 'text-slate-400 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="material-symbols-outlined text-base">person</span>
+                                    <span className="text-[9px] font-label tracking-tight truncate max-w-[50px]">Perfil</span>
+                                </Link>
+                            </>
+                        )}
+                    </nav>
+                </div>
             </div>
         </>
     );
