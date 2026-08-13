@@ -535,12 +535,42 @@ a:hover {
   font-size: 0.875rem;
 }
 
-/* ─── Comprehensive Mobile Responsive Media Queries ─── */
+/* ─── Comprehensive Mobile Responsive Gutters & Spacing ─── */
 @media (max-width: 768px) {
-  .page-container {
-    padding: 1.25rem 0.875rem;
+  /* Guaranteed 16px side padding on phone screens so cards never touch glass edges */
+  body {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
   }
-  
+
+  .page-container,
+  .max-w-7xl,
+  .max-w-6xl,
+  .max-w-5xl,
+  .max-w-4xl {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Ensure main view containers add comfortable inner padding */
+  .min-h-screen {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+
+  /* Card paddings on mobile */
+  .treino-card,
+  .bg-surface,
+  .glass-card,
+  .stat-card {
+    padding: 1.25rem 1rem !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-radius: 16px !important;
+  }
+
   h1 {
     font-size: 1.375rem;
   }
@@ -549,16 +579,12 @@ a:hover {
     font-size: 1.25rem;
   }
 
-  .stat-card {
-    padding: 1rem;
-  }
-  
   .stat-card .stat-value {
     font-size: 1.375rem;
   }
 
   .login-card {
-    padding: 1.5rem 1.25rem;
+    padding: 1.75rem 1.25rem;
     border-radius: var(--radius-lg);
   }
 
@@ -580,12 +606,14 @@ a:hover {
 }
 
 @media (max-width: 480px) {
-  .page-container {
-    padding: 1rem 0.625rem;
+  body {
+    padding-left: 0.875rem !important;
+    padding-right: 0.875rem !important;
   }
 
-  .treino-card {
-    padding: 1rem;
+  .treino-card,
+  .bg-surface {
+    padding: 1rem 0.875rem !important;
   }
 
   /* Stack header elements smoothly */
