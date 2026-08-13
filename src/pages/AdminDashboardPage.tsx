@@ -261,7 +261,7 @@ const AdminDashboardPage: React.FC = () => {
                     )}
                 </section>
 
-                {/* Strategic Analytics Section: Occupancy by Hour with View Switcher */}
+                {/* Strategic Analytics Section: Minimalist Stripe-Style Executive Chart */}
                 <section className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant space-y-6">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-outline-variant/60 pb-4">
                         <div>
@@ -269,103 +269,94 @@ const AdminDashboardPage: React.FC = () => {
                                 <span className="material-symbols-outlined text-primary text-xl">query_stats</span>
                                 <h2 className="font-headline font-bold text-lg text-slate-900">Ocupación por Rango Horario</h2>
                             </div>
-                            <p className="text-xs text-slate-500 mt-0.5">Distribución del porcentaje de ocupación de clases agrupado por hora.</p>
+                            <p className="text-xs text-slate-500 mt-0.5">Porcentaje promedio de asistencia según franja horaria.</p>
                         </div>
 
                         {/* Interactive View Mode Switcher */}
-                        <div className="flex items-center gap-3">
-                            <div className="flex items-center bg-surface-container-low p-1 rounded-xl border border-outline-variant text-xs font-bold">
-                                <button
-                                    onClick={() => setOccupancyViewMode('chart')}
-                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                                        occupancyViewMode === 'chart' ? 'bg-primary text-white shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                                >
-                                    <span className="material-symbols-outlined text-base">bar_chart</span>
-                                    <span>Gráfico Visual</span>
-                                </button>
-                                <button
-                                    onClick={() => setOccupancyViewMode('cards')}
-                                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                                        occupancyViewMode === 'cards' ? 'bg-primary text-white shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
-                                    }`}
-                                >
-                                    <span className="material-symbols-outlined text-base">grid_view</span>
-                                    <span>Vista Tarjetas</span>
-                                </button>
-                            </div>
-
-                            {/* Legend aligned with Treino brand palette */}
-                            <div className="hidden lg:flex items-center gap-3 text-xs font-semibold border-l border-outline-variant pl-3">
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
-                                    <span className="text-slate-700">Alta (≥70%)</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-2.5 h-2.5 rounded-full bg-purple-400 inline-block"></span>
-                                    <span className="text-slate-700">Media (40-69%)</span>
-                                </div>
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block"></span>
-                                    <span className="text-slate-700">Baja (&lt;40%)</span>
-                                </div>
-                            </div>
+                        <div className="flex items-center gap-2 bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs font-semibold">
+                            <button
+                                onClick={() => setOccupancyViewMode('chart')}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                                    occupancyViewMode === 'chart' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-900'
+                                }`}
+                            >
+                                <span className="material-symbols-outlined text-base text-primary">show_chart</span>
+                                <span>Línea Ejecutiva</span>
+                            </button>
+                            <button
+                                onClick={() => setOccupancyViewMode('cards')}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
+                                    occupancyViewMode === 'cards' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-900'
+                                }`}
+                            >
+                                <span className="material-symbols-outlined text-base">grid_view</span>
+                                <span>Vista Tarjetas</span>
+                            </button>
                         </div>
                     </div>
 
-                    {/* View Option 1: Clean Light Surface SVG Bar Chart aligned with Treino Colors */}
+                    {/* View Option 1: Ultra-Minimalist Stripe / Vercel-Style Executive Line Chart */}
                     {occupancyViewMode === 'chart' ? (
-                        <div className="p-6 bg-surface-container-low rounded-2xl border border-outline-variant/60 space-y-4">
-                            <div className="flex justify-between items-center text-xs font-semibold text-slate-500 border-b border-outline-variant/60 pb-3">
-                                <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                                    <span className="material-symbols-outlined text-base text-primary">ssid_chart</span>
-                                    Curva de Ocupación por Hora (06:00 - 21:00)
-                                </span>
-                                <span className="font-mono">Capacidad Máxima 100%</span>
+                        <div className="p-6 bg-white rounded-xl border border-slate-200/80 space-y-6">
+                            <div className="flex justify-between items-center text-xs font-medium text-slate-500">
+                                <div className="flex items-center gap-4">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="w-2.5 h-0.5 bg-primary rounded"></span>
+                                        <span className="text-slate-800 font-semibold text-xs">Curva de Ocupación Intradiaria</span>
+                                    </div>
+                                </div>
+                                <span className="font-mono text-[11px] text-slate-400">Escala: 0% a 100%</span>
                             </div>
 
-                            {/* Responsive Light Bar Chart */}
-                            <div className="h-56 flex items-end justify-between gap-1.5 sm:gap-3 pt-6 pb-2 px-2 overflow-x-auto">
-                                {hourlyData.map((item, idx) => {
-                                    const pct = item.porcentajeOcupacion;
-                                    const isHigh = pct >= 70;
-                                    const isMedium = pct >= 40 && pct < 70;
+                            {/* Refined Minimalist SVG Line Path with Gentle Dot Markers */}
+                            <div className="relative h-48 w-full pt-4 pb-6">
+                                {/* SVG Line Render */}
+                                <svg className="w-full h-36 overflow-visible" preserveAspectRatio="none" viewBox="0 0 100 100">
+                                    {/* Horizontal Reference Grid Lines */}
+                                    <line x1="0" y1="0" x2="100" y2="0" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
+                                    <line x1="0" y1="50" x2="100" y2="50" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="3 3" />
+                                    <line x1="0" y1="100" x2="100" y2="100" stroke="#cbd5e1" strokeWidth="1" />
 
-                                    return (
-                                        <div key={idx} className="flex-1 flex flex-col items-center gap-2 group min-w-[28px] relative">
-                                            {/* Light Surface Hover Tooltip */}
-                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute -top-10 bg-white text-slate-900 text-[11px] font-extrabold py-1 px-2.5 rounded-xl shadow-md pointer-events-none z-10 whitespace-nowrap border border-outline-variant">
-                                                {item.horaEtiqueta}: <span className="text-primary font-bold">{pct}%</span> ({item.totalClases} clases)
+                                    {/* Smooth Trend Polyline */}
+                                    <polyline
+                                        fill="none"
+                                        stroke="#6750A4"
+                                        strokeWidth="2.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        points={hourlyData.map((item, i) => {
+                                            const x = (i / (hourlyData.length - 1)) * 100;
+                                            const y = 100 - item.porcentajeOcupacion;
+                                            return `${x},${y}`;
+                                        }).join(' ')}
+                                    />
+                                </svg>
+
+                                {/* Interactive Data Nodes */}
+                                <div className="absolute inset-0 flex justify-between items-end pb-6 pointer-events-none">
+                                    {hourlyData.map((item, i) => {
+                                        const yPct = item.porcentajeOcupacion;
+                                        return (
+                                            <div key={i} className="flex flex-col items-center group pointer-events-auto relative" style={{ bottom: `${yPct}%` }}>
+                                                {/* Clean Tooltip */}
+                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-5 bg-slate-900 text-white text-[10px] font-mono py-1 px-2 rounded shadow-md pointer-events-none z-10 whitespace-nowrap">
+                                                    {item.horaEtiqueta}: {yPct}%
+                                                </div>
+                                                {/* Refined Node Dot */}
+                                                <div className="w-2.5 h-2.5 rounded-full bg-white border-2 border-primary shadow-sm group-hover:scale-125 transition-transform"></div>
                                             </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
 
-                                            {/* Value Label above Bar */}
-                                            <span className={`text-[10px] font-extrabold ${
-                                                isHigh ? 'text-primary' : isMedium ? 'text-purple-600' : 'text-slate-400'
-                                            }`}>
-                                                {pct}%
-                                            </span>
-
-                                            {/* Animated Light Bar Column */}
-                                            <div className="w-full bg-slate-100 rounded-t-xl h-36 flex items-end p-0.5 overflow-hidden border border-slate-200/60">
-                                                <div
-                                                    className={`w-full rounded-t-lg transition-all duration-500 group-hover:brightness-110 ${
-                                                        isHigh
-                                                            ? 'bg-gradient-to-t from-primary to-purple-600 shadow-sm'
-                                                            : isMedium
-                                                            ? 'bg-gradient-to-t from-purple-400 to-primary-container'
-                                                            : 'bg-gradient-to-t from-slate-300 to-slate-200'
-                                                    }`}
-                                                    style={{ height: `${Math.max(8, pct)}%` }}
-                                                ></div>
-                                            </div>
-
-                                            {/* Hour Tag */}
-                                            <span className="text-[10px] text-slate-600 font-mono font-semibold rotate-45 sm:rotate-0 origin-left mt-1">
-                                                {item.horaEtiqueta.split(' - ')[0]}
-                                            </span>
-                                        </div>
-                                    );
-                                })}
+                            {/* Hour Labels Alignment */}
+                            <div className="flex justify-between text-[11px] font-mono text-slate-400 border-t border-slate-100 pt-3">
+                                {hourlyData.map((item, idx) => (
+                                    <span key={idx} className="text-center truncate px-0.5">
+                                        {item.horaEtiqueta.split(' - ')[0]}
+                                    </span>
+                                ))}
                             </div>
                         </div>
                     ) : (
@@ -389,10 +380,10 @@ const AdminDashboardPage: React.FC = () => {
                                             </span>
                                         </div>
 
-                                        {/* Progress Bar */}
-                                        <div className="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+                                        {/* Minimal Progress Bar */}
+                                        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
                                             <div
-                                                className={`h-2.5 rounded-full transition-all ${
+                                                className={`h-2 rounded-full transition-all ${
                                                     isHigh ? 'bg-primary' : isLow ? 'bg-slate-400' : 'bg-purple-500'
                                                 }`}
                                                 style={{ width: `${Math.max(5, item.porcentajeOcupacion)}%` }}
@@ -422,11 +413,11 @@ const AdminDashboardPage: React.FC = () => {
                         </div>
 
                         {/* Interactive View Switcher for Teachers */}
-                        <div className="flex items-center bg-surface-container-low p-1 rounded-xl border border-outline-variant text-xs font-bold shrink-0">
+                        <div className="flex items-center bg-slate-100/80 p-1 rounded-xl border border-slate-200 text-xs font-semibold shrink-0">
                             <button
                                 onClick={() => setTeacherViewMode('table')}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                                    teacherViewMode === 'table' ? 'bg-primary text-white shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
+                                    teacherViewMode === 'table' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-900'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-base">table_chart</span>
@@ -435,7 +426,7 @@ const AdminDashboardPage: React.FC = () => {
                             <button
                                 onClick={() => setTeacherViewMode('chart')}
                                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all ${
-                                    teacherViewMode === 'chart' ? 'bg-primary text-white shadow-sm font-extrabold' : 'text-slate-600 hover:text-slate-900'
+                                    teacherViewMode === 'chart' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-900'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-base">equalizer</span>
@@ -498,24 +489,24 @@ const AdminDashboardPage: React.FC = () => {
                             </table>
                         </div>
                     ) : (
-                        /* Horizontal Visual Comparison Chart in Treino Theme */
-                        <div className="space-y-4 p-5 bg-surface-container-low rounded-2xl border border-outline-variant/60">
-                            <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">Porcentaje de Llenado por Instructor</p>
+                        /* Minimalist Executive Comparison Chart */
+                        <div className="space-y-3 p-4 bg-white rounded-xl border border-slate-200">
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">Llenado Promedio por Instructor</p>
                             {teacherData.map((p) => (
-                                <div key={p.profesorId} className="space-y-2 bg-white p-4 rounded-xl border border-outline-variant/60 shadow-sm">
+                                <div key={p.profesorId} className="space-y-1 bg-slate-50/60 p-3 rounded-lg border border-slate-100">
                                     <div className="flex justify-between items-center text-xs">
                                         <span className="font-bold text-slate-900">{p.nombreProfesor}</span>
-                                        <span className="font-extrabold text-primary">{p.porcentajeLlenado}% Llenado ({p.clasesDictadas} clases)</span>
+                                        <span className="font-mono font-bold text-primary">{p.porcentajeLlenado}%</span>
                                     </div>
-                                    <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden border border-slate-200/60">
+                                    <div className="w-full bg-slate-200/60 rounded-full h-2 overflow-hidden">
                                         <div
-                                            className="bg-gradient-to-r from-primary to-purple-600 h-3 rounded-full transition-all"
+                                            className="bg-primary h-2 rounded-full transition-all"
                                             style={{ width: `${Math.max(5, p.porcentajeLlenado)}%` }}
                                         ></div>
                                     </div>
-                                    <div className="flex justify-between text-[11px] text-slate-500 font-medium pt-1">
-                                        <span>Retención: {p.alumnosUnicosAtendidos} alumnos únicos</span>
-                                        <span>Asistencia efectiva: {p.porcentajeAsistencia}%</span>
+                                    <div className="flex justify-between text-[11px] text-slate-400 font-mono pt-0.5">
+                                        <span>{p.clasesDictadas} clases dictadas</span>
+                                        <span>{p.alumnosUnicosAtendidos} alumnos únicos</span>
                                     </div>
                                 </div>
                             ))}
