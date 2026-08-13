@@ -24,7 +24,6 @@ const ClassSchedulePage: React.FC = () => {
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
     // Filter States (Default selectedDate to TODAY)
-    const [searchFilter, setSearchFilter] = useState('');
     const [selectedSede, setSelectedSede] = useState<string>('');
     const [selectedProfesor, setSelectedProfesor] = useState<string>('');
     const [selectedDate, setSelectedDate] = useState<string>(getLocalDateString());
@@ -78,7 +77,6 @@ const ClassSchedulePage: React.FC = () => {
     };
 
     const handleClearFilters = () => {
-        setSearchFilter('');
         setSelectedSede('');
         setSelectedProfesor('');
         setSelectedDate('');
@@ -122,10 +120,8 @@ const ClassSchedulePage: React.FC = () => {
     // Filter and strictly sort by start date (fechaHoraInicio ASC)
     const filteredClases = clases
         .filter(c => {
-            const disc = c.disciplina || '';
             const sede = c.sedeNombre || c.sede?.nombre || '';
             const prof = c.profesorNombre || (c.profesor ? `${c.profesor.nombre} ${c.profesor.apellido}`.trim() : '');
-            const query = searchFilter.toLowerCase();
 
             // Date filtering
             let classDateStr = '';
@@ -134,12 +130,11 @@ const ClassSchedulePage: React.FC = () => {
                 classDateStr = getLocalDateString(d);
             }
 
-            const matchesQuery = !query || disc.toLowerCase().includes(query) || sede.toLowerCase().includes(query) || prof.toLowerCase().includes(query);
             const matchesSede = !selectedSede || sede === selectedSede;
             const matchesProfesor = !selectedProfesor || prof === selectedProfesor;
             const matchesDate = !selectedDate || classDateStr === selectedDate;
 
-            return matchesQuery && matchesSede && matchesProfesor && matchesDate;
+            return matchesSede && matchesProfesor && matchesDate;
         })
         .sort((a, b) => {
             const timeA = a.fechaHoraInicio ? new Date(a.fechaHoraInicio).getTime() : 0;
@@ -148,7 +143,7 @@ const ClassSchedulePage: React.FC = () => {
         });
 
     const isTodaySelected = selectedDate === getLocalDateString();
-    const hasActiveFilters = Boolean(searchFilter || selectedSede || selectedProfesor || selectedDate);
+    const hasActiveFilters = Boolean(selectedSede || selectedProfesor || selectedDate);
 
     return (
         <div className="min-h-screen bg-surface-container-high p-4 sm:p-6 lg:p-10 font-body text-on-surface pb-24 md:pb-12">
@@ -226,23 +221,11 @@ const ClassSchedulePage: React.FC = () => {
                     </div>
                 )}
 
-                {/* Filter Toolbar */}
+                {/* Filter Toolbar (Clean Date, Sede & Profesor filters) */}
                 <div className="bg-surface rounded-2xl p-4 shadow-sm border border-outline-variant flex flex-col md:flex-row items-center gap-3">
                     
-                    {/* Text Search Input */}
-                    <div className="relative flex-1 w-full">
-                        <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">search</span>
-                        <input
-                            type="text"
-                            value={searchFilter}
-                            onChange={(e) => setSearchFilter(e.target.value)}
-                            placeholder="Buscar disciplina..."
-                            className="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary bg-white text-slate-900"
-                        />
-                    </div>
-
                     {/* Date Picker Filter */}
-                    <div className="relative w-full md:w-48">
+                    <div className="relative w-full md:w-56">
                         <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">calendar_today</span>
                         <input
                             type="date"
@@ -254,7 +237,7 @@ const ClassSchedulePage: React.FC = () => {
                     </div>
 
                     {/* Sede Dropdown Filter */}
-                    <div className="relative w-full md:w-52">
+                    <div className="relative w-full flex-1">
                         <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">location_on</span>
                         <select
                             value={selectedSede}
@@ -271,7 +254,7 @@ const ClassSchedulePage: React.FC = () => {
                     </div>
 
                     {/* Profesor Dropdown Filter */}
-                    <div className="relative w-full md:w-52">
+                    <div className="relative w-full flex-1">
                         <span className="material-symbols-outlined absolute left-3 top-2.5 text-on-surface-variant text-lg">person</span>
                         <select
                             value={selectedProfesor}
