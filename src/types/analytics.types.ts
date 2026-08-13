@@ -16,6 +16,19 @@ export interface ProfesorDesempeno {
     alumnosUnicosAtendidos: number;
 }
 
+export interface AlumnoRiesgo {
+    clienteId: number;
+    nombreCliente: string;
+    email: string;
+    telefono: string;
+    diasSinEntrenar: number;
+    fechaUltimaClase: string;
+    disciplinaUltimaClase: string;
+    creditosDisponibles: number;
+    nivelRiesgo: 'MEDIO' | 'ALTO';
+    enlaceWhatsAppDirecto: string;
+}
+
 export interface AnalyticsDashboard {
     ocupacionGlobalPromedio: number;
     totalReservasConfirmadas: number;
@@ -23,4 +36,5 @@ export interface AnalyticsDashboard {
     horaMenosConcurrida: string;
     ocupacionPorHorario: HoraOcupacion[];
     desempenoProfesores: ProfesorDesempeno[];
+    alumnosEnRiesgo: AlumnoRiesgo[];
 }

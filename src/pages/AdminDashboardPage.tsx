@@ -4,7 +4,7 @@ import { usuarioService } from '../services/usuarioService';
 import { sedeService } from '../services/sedeService';
 import { claseService } from '../services/claseService';
 import { analyticsService } from '../services/analyticsService';
-import type { AnalyticsDashboard } from '../types/analytics.types';
+import type { AnalyticsDashboard, AlumnoRiesgo } from '../types/analytics.types';
 
 const AdminDashboardPage: React.FC = () => {
     const [stats, setStats] = useState({
@@ -13,37 +13,48 @@ const AdminDashboardPage: React.FC = () => {
         totalClases: 0
     });
     const [analytics, setAnalytics] = useState<AnalyticsDashboard | null>(null);
+    const [alumnosRiesgo, setAlumnosRiesgo] = useState<AlumnoRiesgo[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const loadDashboardStats = async () => {
-            setIsLoading(true);
+    const loadDashboardStats = async () => {
+        setIsLoading(true);
+        try {
+            const usuarios = await usuarioService.getAll();
+            const sedes = await sedeService.getAll();
+            const clases = await claseService.getAll();
+
+            setStats({
+                totalClients: Array.isArray(usuarios) ? usuarios.length : 0,
+                totalSedes: Array.isArray(sedes) ? sedes.length : 0,
+                totalClases: Array.isArray(clases) ? clases.length : 0
+            });
+
             try {
-                const usuarios = await usuarioService.getAll();
-                const sedes = await sedeService.getAll();
-                const clases = await claseService.getAll();
-
-                setStats({
-                    totalClients: Array.isArray(usuarios) ? usuarios.length : 0,
-                    totalSedes: Array.isArray(sedes) ? sedes.length : 0,
-                    totalClases: Array.isArray(clases) ? clases.length : 0
-                });
-
-                try {
-                    const analyticsData = await analyticsService.getDashboardAnalytics();
-                    setAnalytics(analyticsData);
-                } catch (analyticsErr) {
-                    console.warn('Analytics endpoint not active yet or failed:', analyticsErr);
-                }
-            } catch (err) {
-                console.error('Error cargando métricas:', err);
-            } finally {
-                setIsLoading(false);
+                const analyticsData = await analyticsService.getDashboardAnalytics();
+                setAnalytics(analyticsData);
+                setAlumnosRiesgo(analyticsData.alumnosEnRiesgo || []);
+            } catch (analyticsErr) {
+                console.warn('Analytics endpoint not active yet or failed:', analyticsErr);
             }
-        };
+        } catch (err) {
+            console.error('Error cargando métricas:', err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
+    useEffect(() => {
         loadDashboardStats();
     }, []);
+
+    const handleArchivar = async (clienteId: number) => {
+        try {
+            await analyticsService.archivarAlumnoRiesgo(clienteId);
+            setAlumnosRiesgo(prev => prev.filter(a => a.clienteId !== clienteId));
+        } catch (err) {
+            console.error('Error al archivar alumno en riesgo:', err);
+        }
+    };
 
     return (
         <div className="min-h-screen bg-surface-container-high p-4 sm:p-6 lg:p-10 font-body text-on-surface pb-24 md:pb-12">
@@ -56,7 +67,7 @@ const AdminDashboardPage: React.FC = () => {
                             Panel de Administración & Analítica
                         </h1>
                         <p className="text-on-surface-variant text-sm mt-1">
-                            Métricas de ocupación por horario, rendimiento de instructores y gestión general del estudio.
+                            Supervisión de prevención de abandono, ocupación por horario y rendimiento general.
                         </p>
                     </div>
                 </div>
@@ -84,7 +95,23 @@ const AdminDashboardPage: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* KPI 2: Hora de Mayor Demanda */}
+                        {/* KPI 2: Alumnos en Riesgo */}
+                        <div className="bg-surface rounded-2xl p-6 shadow-sm border border-amber-200 bg-amber-50/30 hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div className="flex justify-between items-start mb-3">
+                                <p className="font-label text-amber-900 font-semibold text-xs uppercase tracking-wider">Riesgo de Abandono</p>
+                                <span className="material-symbols-outlined text-amber-600 bg-amber-100 p-2 rounded-xl text-xl">warning</span>
+                            </div>
+                            <div className="flex items-end gap-2">
+                                <h3 className="text-3xl font-headline font-extrabold text-amber-900">
+                                    {isLoading ? '...' : alumnosRiesgo.length}
+                                </h3>
+                                <span className="text-xs font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full mb-1">
+                                    10-45 días sin ir
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* KPI 3: Hora de Mayor Demanda */}
                         <div className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden">
                             <div className="flex justify-between items-start mb-3">
                                 <p className="font-label text-on-surface-variant font-semibold text-xs uppercase tracking-wider">Mayor Demanda</p>
@@ -95,20 +122,6 @@ const AdminDashboardPage: React.FC = () => {
                                     {isLoading ? '...' : (analytics?.horaMasConcurrida || '18:00 - 19:00')}
                                 </h3>
                                 <p className="text-[11px] text-slate-500 mt-1">Horario con mayor tasa de reservas</p>
-                            </div>
-                        </div>
-
-                        {/* KPI 3: Hora de Menor Demanda */}
-                        <div className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden">
-                            <div className="flex justify-between items-start mb-3">
-                                <p className="font-label text-on-surface-variant font-semibold text-xs uppercase tracking-wider">Menor Demanda</p>
-                                <span className="material-symbols-outlined text-blue-600 bg-blue-50 p-2 rounded-xl text-xl">ac_unit</span>
-                            </div>
-                            <div>
-                                <h3 className="text-xl font-headline font-extrabold text-slate-900">
-                                    {isLoading ? '...' : (analytics?.horaMenosConcurrida || '15:00 - 16:00')}
-                                </h3>
-                                <p className="text-[11px] text-slate-500 mt-1">Horario con menor ocupación</p>
                             </div>
                         </div>
 
@@ -128,6 +141,100 @@ const AdminDashboardPage: React.FC = () => {
                             </div>
                         </div>
                     </div>
+                </section>
+
+                {/* Churn Risk Prevention Alert Section */}
+                <section className="bg-surface rounded-2xl p-6 shadow-sm border border-amber-200 space-y-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/60 pb-4">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-amber-600 text-2xl">notification_important</span>
+                                <h2 className="font-headline font-bold text-lg text-slate-900">Alumnos en Riesgo de Abandono (10 a 45 días sin entrenar)</h2>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-0.5">
+                                Clientes activos que llevan días sin reservar. Haz clic en el botón verde para enviarles un WhatsApp directo con mensaje prediseñado y retener la membresía.
+                            </p>
+                        </div>
+                        <span className="text-xs font-bold text-amber-800 bg-amber-100 px-3 py-1 rounded-full shrink-0">
+                            {alumnosRiesgo.length} {alumnosRiesgo.length === 1 ? 'Alumno para contactar' : 'Alumnos para contactar'}
+                        </span>
+                    </div>
+
+                    {alumnosRiesgo.length === 0 ? (
+                        <div className="p-8 text-center bg-amber-50/50 rounded-xl text-amber-900 space-y-1">
+                            <span className="material-symbols-outlined text-3xl text-emerald-600">verified</span>
+                            <p className="font-bold text-sm">¡Excelente! No hay alumnos en riesgo de abandono en este momento.</p>
+                            <p className="text-xs text-slate-500">Todos tus clientes activos han asistido recientemente a sus clases.</p>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-left border-collapse min-w-[700px]">
+                                <thead>
+                                    <tr className="border-b border-outline-variant bg-slate-50 text-xs font-label font-bold text-slate-500 uppercase tracking-wider">
+                                        <th className="py-3 px-4">Alumno</th>
+                                        <th className="py-3 px-4">Teléfono</th>
+                                        <th className="py-3 px-4 text-center">Inactividad</th>
+                                        <th className="py-3 px-4 text-center">Créditos</th>
+                                        <th className="py-3 px-4 text-center">Nivel Riesgo</th>
+                                        <th className="py-3 px-4 text-right">Acción Rápida</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-outline-variant/60 text-sm">
+                                    {alumnosRiesgo.map((a) => (
+                                        <tr key={a.clienteId} className="hover:bg-amber-50/40 transition-colors">
+                                            <td className="py-3.5 px-4 font-semibold text-slate-900">
+                                                <p className="font-bold text-sm text-slate-900">{a.nombreCliente}</p>
+                                                <p className="text-xs text-slate-500 font-normal">{a.email}</p>
+                                            </td>
+                                            <td className="py-3.5 px-4 font-mono text-xs text-slate-700 font-bold">
+                                                {a.telefono}
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center">
+                                                <span className="font-bold text-amber-900">{a.diasSinEntrenar} días</span>
+                                                <p className="text-[10px] text-slate-400 font-normal">Última: {a.fechaUltimaClase}</p>
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center">
+                                                <span className="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full font-bold text-xs">
+                                                    {a.creditosDisponibles} créditos
+                                                </span>
+                                            </td>
+                                            <td className="py-3.5 px-4 text-center">
+                                                <span className={`px-2.5 py-1 rounded-full text-xs font-extrabold ${
+                                                    a.nivelRiesgo === 'ALTO' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-800'
+                                                }`}>
+                                                    {a.nivelRiesgo === 'ALTO' ? '🔴 ALTO' : '🟡 MEDIO'}
+                                                </span>
+                                            </td>
+                                            <td className="py-3.5 px-4 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    {a.enlaceWhatsAppDirecto ? (
+                                                        <a
+                                                            href={a.enlaceWhatsAppDirecto}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-all active:scale-95"
+                                                        >
+                                                            <span className="material-symbols-outlined text-base">chat</span>
+                                                            <span>📲 WhatsApp</span>
+                                                        </a>
+                                                    ) : (
+                                                        <span className="text-xs text-slate-400 italic">Sin Teléfono</span>
+                                                    )}
+                                                    <button
+                                                        onClick={() => handleArchivar(a.clienteId)}
+                                                        title="Marcar como contactado o archivar"
+                                                        className="px-2.5 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-semibold transition-colors"
+                                                    >
+                                                        ✔ Archivar
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
                 </section>
 
                 {/* Strategic Analytics Section: Occupancy by Hour */}

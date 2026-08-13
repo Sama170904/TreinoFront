@@ -18,9 +18,9 @@ const AdminUsuariosPage: React.FC = () => {
     const [isSubmittingCredito, setIsSubmittingCredito] = useState(false);
     const [searchFilter, setSearchFilter] = useState('');
 
-    const userForm = useForm<UsuarioSchemaType>({
+    const userForm = useForm<UsuarioSchemaType & { telefono?: string }>({
         resolver: zodResolver(usuarioSchema),
-        defaultValues: { nombre: '', apellido: '', email: '', password: '', rol: 'CLIENTE' }
+        defaultValues: { nombre: '', apellido: '', email: '', telefono: '', password: '', rol: 'CLIENTE' }
     });
 
     const creditoForm = useForm<CreditAsignacionSchemaType>({
@@ -46,7 +46,7 @@ const AdminUsuariosPage: React.FC = () => {
     }, []);
 
     const openCreateUserModal = () => {
-        userForm.reset({ nombre: '', apellido: '', email: '', password: '', rol: 'CLIENTE' });
+        userForm.reset({ nombre: '', apellido: '', email: '', telefono: '', password: '', rol: 'CLIENTE' });
         setShowUserModal(true);
     };
 
@@ -56,7 +56,7 @@ const AdminUsuariosPage: React.FC = () => {
         setShowCreditoModal(true);
     };
 
-    const onUserSubmit = async (data: UsuarioSchemaType) => {
+    const onUserSubmit = async (data: UsuarioSchemaType & { telefono?: string }) => {
         setIsSubmittingUser(true);
         try {
             await usuarioService.create(data);
@@ -94,6 +94,7 @@ const AdminUsuariosPage: React.FC = () => {
         u.nombre.toLowerCase().includes(searchFilter.toLowerCase()) ||
         u.apellido.toLowerCase().includes(searchFilter.toLowerCase()) ||
         u.email.toLowerCase().includes(searchFilter.toLowerCase()) ||
+        (u.telefono && u.telefono.includes(searchFilter)) ||
         u.rol.toLowerCase().includes(searchFilter.toLowerCase())
     );
 
@@ -105,7 +106,7 @@ const AdminUsuariosPage: React.FC = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="font-headline text-2xl font-extrabold text-slate-900">Gestión de Usuarios & Créditos</h1>
-                        <p className="text-on-surface-variant text-sm mt-0.5">Administra los clientes, profesores y paquetes de créditos del estudio.</p>
+                        <p className="text-on-surface-variant text-sm mt-0.5">Administra los clientes, profesores, números de teléfono y paquetes de créditos.</p>
                     </div>
                     <button
                         onClick={openCreateUserModal}
@@ -139,7 +140,7 @@ const AdminUsuariosPage: React.FC = () => {
                             type="text"
                             value={searchFilter}
                             onChange={(e) => setSearchFilter(e.target.value)}
-                            placeholder="Buscar por nombre, email o rol..."
+                            placeholder="Buscar por nombre, email, teléfono o rol..."
                             className="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-xl text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary"
                         />
                     </div>
@@ -164,6 +165,7 @@ const AdminUsuariosPage: React.FC = () => {
                                     <tr className="bg-surface-container-low border-b border-outline-variant text-xs font-label uppercase tracking-wider text-on-surface-variant font-bold">
                                         <th className="py-3.5 px-6">Usuario</th>
                                         <th className="py-3.5 px-6">Correo</th>
+                                        <th className="py-3.5 px-6">Teléfono / WhatsApp</th>
                                         <th className="py-3.5 px-6">Rol</th>
                                         <th className="py-3.5 px-6">Estado</th>
                                         <th className="py-3.5 px-6 text-right">Acciones</th>
@@ -182,6 +184,9 @@ const AdminUsuariosPage: React.FC = () => {
                                                 </div>
                                             </td>
                                             <td className="py-4 px-6 text-on-surface-variant">{u.email}</td>
+                                            <td className="py-4 px-6 font-mono text-xs text-slate-700 font-bold">
+                                                {u.telefono || <span className="text-slate-400 font-normal italic">Sin registra</span>}
+                                            </td>
                                             <td className="py-4 px-6">
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold ${
                                                     u.rol === 'ADMINISTRADOR' ? 'bg-purple-100 text-purple-800' :
@@ -254,6 +259,11 @@ const AdminUsuariosPage: React.FC = () => {
                                 {userForm.formState.errors.email && (
                                     <p className="text-red-500 text-xs mt-1">{userForm.formState.errors.email.message}</p>
                                 )}
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-label font-semibold text-slate-700 mb-1">Teléfono / WhatsApp</label>
+                                <input type="text" {...userForm.register('telefono')} placeholder="Ej. 0987689886" className="w-full px-3 py-2 border border-outline-variant rounded-lg text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary" />
                             </div>
 
                             <div>

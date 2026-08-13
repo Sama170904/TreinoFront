@@ -3,6 +3,7 @@ export interface Usuario {
     nombre: string;
     apellido: string;
     email: string;
+    telefono?: string;
     rol: Rol;
     estado: Estado;
 }
@@ -22,6 +23,7 @@ export interface UsuarioCreate {
     nombre: string;
     apellido: string;
     email: string;
+    telefono?: string;
     password?: string;
     rol: string;
 }
@@ -31,6 +33,7 @@ export interface UsuarioUpdate {
     nombre: string;
     apellido: string;
     email: string;
+    telefono?: string;
     rol: string;
 }
 
