@@ -170,9 +170,9 @@ const Navbar: React.FC = () => {
                 </div>
             </header>
 
-            {/* Hyper-Modern Floating Glassmorphism Mobile Bottom Navigation Dock */}
+            {/* Light Glassmorphism Floating Dock matching exact app design system */}
             <div className="md:hidden fixed bottom-3 left-3 right-3 z-50">
-                <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-1 shadow-2xl shadow-purple-950/40">
+                <div className="bg-white/95 backdrop-blur-xl border border-outline-variant/80 rounded-2xl p-1.5 shadow-xl shadow-slate-900/10">
                     <nav className="flex justify-between items-center h-12 w-full gap-1">
                         {usuario.rol === 'CLIENTE' && (
                             <>
@@ -180,8 +180,8 @@ const Navbar: React.FC = () => {
                                     to="/clases"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/clases')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">calendar_month</span>
@@ -191,8 +191,8 @@ const Navbar: React.FC = () => {
                                     to="/mis-reservas"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/mis-reservas')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">confirmation_number</span>
@@ -202,8 +202,8 @@ const Navbar: React.FC = () => {
                                     to="/creditos"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/creditos')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">account_balance_wallet</span>
@@ -213,8 +213,8 @@ const Navbar: React.FC = () => {
                                     to="/profile"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/profile')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">person</span>
@@ -229,8 +229,8 @@ const Navbar: React.FC = () => {
                                     to="/teacher/clases"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/teacher/clases')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">event_note</span>
@@ -240,8 +240,8 @@ const Navbar: React.FC = () => {
                                     to="/teacher/check-in"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/teacher/check-in')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">how_to_reg</span>
@@ -251,8 +251,8 @@ const Navbar: React.FC = () => {
                                     to="/profile"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/profile')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-lg">person</span>
@@ -267,8 +267,8 @@ const Navbar: React.FC = () => {
                                     to="/admin"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/admin')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-base">dashboard</span>
@@ -278,8 +278,8 @@ const Navbar: React.FC = () => {
                                     to="/admin/sedes"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/admin/sedes')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-base">storefront</span>
@@ -289,8 +289,8 @@ const Navbar: React.FC = () => {
                                     to="/admin/usuarios"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/admin/usuarios')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-base">group</span>
@@ -300,8 +300,8 @@ const Navbar: React.FC = () => {
                                     to="/teacher/clases"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/teacher/clases')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-base">event_note</span>
@@ -311,8 +311,8 @@ const Navbar: React.FC = () => {
                                     to="/profile"
                                     className={`flex flex-col items-center justify-center flex-1 h-full rounded-xl transition-all duration-200 ${
                                         isActive('/profile')
-                                            ? 'bg-gradient-to-r from-primary to-accent text-white font-bold shadow-md shadow-primary/30 scale-[1.02]'
-                                            : 'text-slate-400 hover:text-slate-200'
+                                            ? 'bg-primary-container text-primary font-bold shadow-sm scale-[1.02]'
+                                            : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high/60'
                                     }`}
                                 >
                                     <span className="material-symbols-outlined text-base">person</span>
