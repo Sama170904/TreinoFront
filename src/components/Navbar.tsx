@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuthStore } from '../store/useAuthStore';
 import TreinoLogo from './TreinoLogo';
@@ -141,9 +141,9 @@ const Navbar: React.FC = () => {
                         <div className="flex items-center gap-2 sm:gap-4">
                             <Link
                                 to="/profile"
-                                className="flex items-center gap-3 p-1.5 rounded-full hover:bg-surface-container-high transition-colors"
+                                className="flex items-center gap-2 sm:gap-3 p-1.5 rounded-full hover:bg-surface-container-high transition-colors"
                             >
-                                <div className="w-9 h-9 rounded-full bg-primary text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-primary text-white font-bold flex items-center justify-center text-xs sm:text-sm shadow-sm">
                                     {usuario.email ? usuario.email.charAt(0).toUpperCase() : 'U'}
                                 </div>
                                 <div className="hidden sm:flex flex-col text-left">
@@ -170,46 +170,46 @@ const Navbar: React.FC = () => {
                 </div>
             </header>
 
-            {/* Native Mobile Bottom Navigation Bar (Visible only on Mobile screens < 768px) */}
-            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-lg border-t border-outline-variant shadow-lg px-2 py-1">
-                <nav className="flex justify-around items-center h-14">
+            {/* Native Mobile Bottom Navigation Bar (Ultra-responsive for mobile screens < 768px) */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-lg border-t border-outline-variant shadow-lg px-1 py-1">
+                <nav className="flex justify-around items-center h-14 w-full">
                     {usuario.rol === 'CLIENTE' && (
                         <>
                             <Link
                                 to="/clases"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/clases') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">calendar_month</span>
-                                <span>Clases</span>
+                                <span className="truncate w-full text-center">Clases</span>
                             </Link>
                             <Link
                                 to="/mis-reservas"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/mis-reservas') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">confirmation_number</span>
-                                <span>Reservas</span>
+                                <span className="truncate w-full text-center">Reservas</span>
                             </Link>
                             <Link
                                 to="/creditos"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/creditos') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">account_balance_wallet</span>
-                                <span>Créditos</span>
+                                <span className="truncate w-full text-center">Créditos</span>
                             </Link>
                             <Link
                                 to="/profile"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">person</span>
-                                <span>Perfil</span>
+                                <span className="truncate w-full text-center">Perfil</span>
                             </Link>
                         </>
                     )}
@@ -218,30 +218,30 @@ const Navbar: React.FC = () => {
                         <>
                             <Link
                                 to="/teacher/clases"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/teacher/clases') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">event_note</span>
-                                <span>Clases</span>
+                                <span className="truncate w-full text-center">Clases</span>
                             </Link>
                             <Link
                                 to="/teacher/check-in"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/teacher/check-in') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">how_to_reg</span>
-                                <span>Pase Lista</span>
+                                <span className="truncate w-full text-center">Pase Lista</span>
                             </Link>
                             <Link
                                 to="/profile"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[10px] sm:text-[11px] font-label font-semibold transition-colors ${
                                     isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
                                 <span className="material-symbols-outlined text-xl">person</span>
-                                <span>Perfil</span>
+                                <span className="truncate w-full text-center">Perfil</span>
                             </Link>
                         </>
                     )}
@@ -250,48 +250,48 @@ const Navbar: React.FC = () => {
                         <>
                             <Link
                                 to="/admin"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
                                     isActive('/admin') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-xl">dashboard</span>
-                                <span>Dashboard</span>
+                                <span className="material-symbols-outlined text-lg sm:text-xl">dashboard</span>
+                                <span className="truncate w-full text-center">Dash</span>
                             </Link>
                             <Link
                                 to="/admin/sedes"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
                                     isActive('/admin/sedes') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-xl">storefront</span>
-                                <span>Sedes</span>
+                                <span className="material-symbols-outlined text-lg sm:text-xl">storefront</span>
+                                <span className="truncate w-full text-center">Sedes</span>
                             </Link>
                             <Link
                                 to="/admin/usuarios"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
                                     isActive('/admin/usuarios') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-xl">group</span>
-                                <span>Usuarios</span>
+                                <span className="material-symbols-outlined text-lg sm:text-xl">group</span>
+                                <span className="truncate w-full text-center">Users</span>
                             </Link>
                             <Link
                                 to="/teacher/clases"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
                                     isActive('/teacher/clases') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-xl">event_note</span>
-                                <span>Clases</span>
+                                <span className="material-symbols-outlined text-lg sm:text-xl">event_note</span>
+                                <span className="truncate w-full text-center">Clases</span>
                             </Link>
                             <Link
                                 to="/profile"
-                                className={`flex flex-col items-center justify-center w-full py-1 text-[11px] font-label font-semibold transition-colors ${
+                                className={`flex flex-col items-center justify-center flex-1 min-w-0 py-1 text-[9px] sm:text-[10px] font-label font-semibold transition-colors ${
                                     isActive('/profile') ? 'text-primary' : 'text-on-surface-variant'
                                 }`}
                             >
-                                <span className="material-symbols-outlined text-xl">person</span>
-                                <span>Perfil</span>
+                                <span className="material-symbols-outlined text-lg sm:text-xl">person</span>
+                                <span className="truncate w-full text-center">Perfil</span>
                             </Link>
                         </>
                     )}
