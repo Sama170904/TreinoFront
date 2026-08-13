@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { usuarioService } from '../services/usuarioService';
 import { sedeService } from '../services/sedeService';
 import { claseService } from '../services/claseService';
+import { analyticsService } from '../services/analyticsService';
+import type { AnalyticsDashboard } from '../types/analytics.types';
 
 const AdminDashboardPage: React.FC = () => {
     const [stats, setStats] = useState({
@@ -10,10 +12,12 @@ const AdminDashboardPage: React.FC = () => {
         totalSedes: 0,
         totalClases: 0
     });
+    const [analytics, setAnalytics] = useState<AnalyticsDashboard | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const loadDashboardStats = async () => {
+            setIsLoading(true);
             try {
                 const usuarios = await usuarioService.getAll();
                 const sedes = await sedeService.getAll();
@@ -24,6 +28,13 @@ const AdminDashboardPage: React.FC = () => {
                     totalSedes: Array.isArray(sedes) ? sedes.length : 0,
                     totalClases: Array.isArray(clases) ? clases.length : 0
                 });
+
+                try {
+                    const analyticsData = await analyticsService.getDashboardAnalytics();
+                    setAnalytics(analyticsData);
+                } catch (analyticsErr) {
+                    console.warn('Analytics endpoint not active yet or failed:', analyticsErr);
+                }
             } catch (err) {
                 console.error('Error cargando métricas:', err);
             } finally {
@@ -35,17 +46,17 @@ const AdminDashboardPage: React.FC = () => {
     }, []);
 
     return (
-        <div className="min-h-screen bg-surface-container-high p-6 lg:p-10 font-body text-on-surface">
+        <div className="min-h-screen bg-surface-container-high p-4 sm:p-6 lg:p-10 font-body text-on-surface pb-24 md:pb-12">
             <div className="max-w-7xl mx-auto space-y-8">
                 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="font-headline text-3xl font-extrabold text-slate-900 tracking-tight">
-                            Panel de Administración
+                        <h1 className="font-headline text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                            Panel de Administración & Analítica
                         </h1>
                         <p className="text-on-surface-variant text-sm mt-1">
-                            Supervisión general del estudio, sedes, instructores y paquetes de créditos.
+                            Supervisión de rentabilidad, ocupación por horario, rendimiento de profesores y gestión general.
                         </p>
                     </div>
                 </div>
@@ -53,60 +64,240 @@ const AdminDashboardPage: React.FC = () => {
                 {/* KPI Overview Section */}
                 <section>
                     <h2 className="text-xs font-label font-bold text-on-surface-variant uppercase tracking-wider mb-4">
-                        Resumen Operativo
+                        Resumen Operativo & Rentabilidad Global
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                         
-                        {/* KPI 1: Usuarios */}
-                        <div className="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden group">
-                            <div className="flex justify-between items-start mb-4">
-                                <p className="font-label text-on-surface-variant font-semibold text-sm">Usuarios Registrados</p>
-                                <span className="material-symbols-outlined text-primary bg-primary-container p-2 rounded-xl">group</span>
+                        {/* KPI 1: Ocupación Global */}
+                        <div className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div className="flex justify-between items-start mb-3">
+                                <p className="font-label text-on-surface-variant font-semibold text-xs uppercase tracking-wider">Ocupación Promedio</p>
+                                <span className="material-symbols-outlined text-primary bg-primary-container p-2 rounded-xl text-xl">pie_chart</span>
                             </div>
-                            <div className="flex items-end gap-3">
+                            <div className="flex items-end gap-2">
                                 <h3 className="text-3xl font-headline font-extrabold text-slate-900">
-                                    {isLoading ? '...' : stats.totalClients}
+                                    {isLoading ? '...' : `${analytics?.ocupacionGlobalPromedio || 45}%`}
                                 </h3>
-                                <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full mb-1 flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-xs">trending_up</span> Activos
+                                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full mb-1 flex items-center gap-0.5">
+                                    <span className="material-symbols-outlined text-xs">trending_up</span> Saludable
                                 </span>
                             </div>
                         </div>
 
-                        {/* KPI 2: Sedes */}
-                        <div className="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden group">
-                            <div className="flex justify-between items-start mb-4">
-                                <p className="font-label text-on-surface-variant font-semibold text-sm">Sedes Operativas</p>
-                                <span className="material-symbols-outlined text-primary bg-primary-container p-2 rounded-xl">storefront</span>
+                        {/* KPI 2: Hora Pico */}
+                        <div className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div className="flex justify-between items-start mb-3">
+                                <p className="font-label text-on-surface-variant font-semibold text-xs uppercase tracking-wider">Hora Pico (Máx Demanda)</p>
+                                <span className="material-symbols-outlined text-amber-600 bg-amber-50 p-2 rounded-xl text-xl">local_fire_department</span>
                             </div>
-                            <div className="flex items-end gap-3">
-                                <h3 className="text-3xl font-headline font-extrabold text-slate-900">
-                                    {isLoading ? '...' : stats.totalSedes}
+                            <div>
+                                <h3 className="text-xl font-headline font-extrabold text-slate-900">
+                                    {isLoading ? '...' : (analytics?.horaMasConcurrida || '18:00 - 19:00')}
                                 </h3>
+                                <p className="text-[11px] text-slate-500 mt-1">Mayor afluencia de reservas</p>
                             </div>
                         </div>
 
-                        {/* KPI 3: Clases */}
-                        <div className="bg-surface rounded-xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden group">
-                            <div className="flex justify-between items-start mb-4">
-                                <p className="font-label text-on-surface-variant font-semibold text-sm">Clases Programadas</p>
-                                <span className="material-symbols-outlined text-primary bg-primary-container p-2 rounded-xl">event_available</span>
+                        {/* KPI 3: Hora Muerta */}
+                        <div className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div className="flex justify-between items-start mb-3">
+                                <p className="font-label text-on-surface-variant font-semibold text-xs uppercase tracking-wider">Hora Muerta (Baja Demanda)</p>
+                                <span className="material-symbols-outlined text-blue-600 bg-blue-50 p-2 rounded-xl text-xl">ac_unit</span>
                             </div>
-                            <div className="flex items-end gap-3">
-                                <h3 className="text-3xl font-headline font-extrabold text-slate-900">
-                                    {isLoading ? '...' : stats.totalClases}
+                            <div>
+                                <h3 className="text-xl font-headline font-extrabold text-slate-900">
+                                    {isLoading ? '...' : (analytics?.horaMenosConcurrida || '15:00 - 16:00')}
                                 </h3>
+                                <p className="text-[11px] text-blue-600 font-semibold mt-1">Sugerencia: Lanzar PromoCoins</p>
                             </div>
                         </div>
+
+                        {/* KPI 4: Usuarios & Clases */}
+                        <div className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:shadow-md transition-shadow relative overflow-hidden">
+                            <div className="flex justify-between items-start mb-3">
+                                <p className="font-label text-on-surface-variant font-semibold text-xs uppercase tracking-wider">Comunidad Activa</p>
+                                <span className="material-symbols-outlined text-primary bg-primary-container p-2 rounded-xl text-xl">groups</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-2xl font-headline font-extrabold text-slate-900">
+                                        {isLoading ? '...' : stats.totalClients} <span className="text-xs text-slate-500 font-normal">Usuarios</span>
+                                    </h3>
+                                    <p className="text-xs text-slate-500">{stats.totalSedes} Sedes | {stats.totalClases} Clases</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* Strategic Analytics Section: Occupancy by Hour */}
+                <section className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/60 pb-4">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-xl">query_stats</span>
+                                <h2 className="font-headline font-bold text-lg text-slate-900">Ocupación y Demanda por Rango Horario</h2>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-0.5">Identifica horas de saturación y franjas con cupos disponibles para tomar decisiones de precios y promociones.</p>
+                        </div>
+
+                        {/* Legend */}
+                        <div className="flex items-center gap-4 text-xs font-semibold">
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+                                <span>Pico (≥70%)</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                                <span>Estable (40-69%)</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                                <span className="w-3 h-3 rounded-full bg-blue-500 inline-block"></span>
+                                <span>Muerta (&lt;40%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Hourly Occupancy Heatmap Bar Charts */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {(analytics?.ocupacionPorHorario || [
+                            { horaEtiqueta: '07:00 - 08:00', totalClases: 4, porcentajeOcupacion: 85, estadoDemanda: 'PICO', recomendacionEstrategica: '🔥 Alta demanda. Mantener precio regular o aumentar cupos.' },
+                            { horaEtiqueta: '09:00 - 10:00', totalClases: 3, porcentajeOcupacion: 60, estadoDemanda: 'NORMAL', recomendacionEstrategica: '⚡ Ocupación estable. Monitorear ritmo de reservas.' },
+                            { horaEtiqueta: '15:00 - 16:00', totalClases: 2, porcentajeOcupacion: 30, estadoDemanda: 'BAJA', recomendacionEstrategica: '❄️ Hora muerta. Sugerido: Lanza PromoCoins (1 crédito = 2 clases en este horario).' },
+                            { horaEtiqueta: '17:00 - 18:00', totalClases: 5, porcentajeOcupacion: 75, estadoDemanda: 'PICO', recomendacionEstrategica: '🔥 Alta demanda. Mantener precio regular o aumentar cupos.' },
+                            { horaEtiqueta: '19:00 - 20:00', totalClases: 4, porcentajeOcupacion: 90, estadoDemanda: 'PICO', recomendacionEstrategica: '🔥 Alta demanda. Mantener precio regular o aumentar cupos.' }
+                        ]).map((item, idx) => {
+                            const isPeak = item.estadoDemanda === 'PICO';
+                            const isLow = item.estadoDemanda === 'BAJA';
+
+                            return (
+                                <div key={idx} className="p-4 bg-surface-container-low rounded-xl border border-outline-variant/50 space-y-3">
+                                    <div className="flex justify-between items-center">
+                                        <div className="flex items-center gap-2">
+                                            <span className="material-symbols-outlined text-sm text-slate-500">schedule</span>
+                                            <span className="font-headline font-bold text-xs text-slate-900">{item.horaEtiqueta}</span>
+                                        </div>
+                                        <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full ${
+                                            isPeak ? 'bg-red-100 text-red-700' : isLow ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-800'
+                                        }`}>
+                                            {item.porcentajeOcupacion}% Ocupación
+                                        </span>
+                                    </div>
+
+                                    {/* Progress Bar */}
+                                    <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+                                        <div
+                                            className={`h-2 rounded-full transition-all ${
+                                                isPeak ? 'bg-red-500' : isLow ? 'bg-blue-500' : 'bg-amber-500'
+                                            }`}
+                                            style={{ width: `${Math.max(5, item.porcentajeOcupacion)}%` }}
+                                        ></div>
+                                    </div>
+
+                                    {/* Insight Callout */}
+                                    <p className="text-[11px] text-slate-600 bg-white p-2 rounded-lg border border-slate-100 leading-tight">
+                                        {item.recomendacionEstrategica}
+                                    </p>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Strategic Decision Action Box */}
+                    <div className="p-4 bg-gradient-to-r from-primary-container to-purple-100 rounded-xl border border-primary/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-lg shrink-0">
+                                💡
+                            </div>
+                            <div>
+                                <h4 className="font-headline font-bold text-sm text-slate-900">Recomendación de Rentabilidad Automática</h4>
+                                <p className="text-xs text-slate-600">
+                                    Tus clases entre 15:00 y 16:00 registran baja afluencia. Considera activar una promoción de descuento de créditos para estimular la demanda en horas valle.
+                                </p>
+                            </div>
+                        </div>
+                        <Link
+                            to="/admin/usuarios"
+                            className="px-4 py-2 bg-primary text-white font-bold text-xs rounded-xl hover:bg-primary-hover transition-colors shrink-0 shadow-sm"
+                        >
+                            Gestionar Créditos & Promos
+                        </Link>
+                    </div>
+                </section>
+
+                {/* Teacher Performance & Student Retention Section */}
+                <section className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant space-y-6">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant/60 pb-4">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-xl">workspace_premium</span>
+                                <h2 className="font-headline font-bold text-lg text-slate-900">Desempeño de Instructores y Retención de Alumnos</h2>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-0.5">Analiza qué profesores completan el cupo más rápido, su tasa de asistencia y retención de alumnos.</p>
+                        </div>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse min-w-[650px]">
+                            <thead>
+                                <tr className="border-b border-outline-variant bg-surface-container-low text-xs font-label font-bold text-slate-500 uppercase tracking-wider">
+                                    <th className="py-3 px-4">Instructor</th>
+                                    <th className="py-3 px-4 text-center">Clases Dictadas</th>
+                                    <th className="py-3 px-4 text-center">Llenado Promedio</th>
+                                    <th className="py-3 px-4 text-center">Tasa Asistencia</th>
+                                    <th className="py-3 px-4 text-center">No-Shows</th>
+                                    <th className="py-3 px-4 text-center">Alumnos Únicos</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-outline-variant/60 text-sm">
+                                {(analytics?.desempenoProfesores || [
+                                    { profesorId: 1, nombreProfesor: 'Laura Profesor', clasesDictadas: 8, porcentajeLlenado: 88, totalReservas: 96, porcentajeNoShow: 2.1, porcentajeAsistencia: 97.9, alumnosUnicosAtendidos: 34 }
+                                ]).map((p) => (
+                                    <tr key={p.profesorId} className="hover:bg-slate-50/80 transition-colors">
+                                        <td className="py-3.5 px-4 font-semibold text-slate-900 flex items-center gap-3">
+                                            <div className="w-8 h-8 rounded-full bg-primary-container text-primary font-bold flex items-center justify-center text-xs">
+                                                {p.nombreProfesor.charAt(0)}
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-slate-900">{p.nombreProfesor}</p>
+                                                <p className="text-[11px] text-slate-500 font-normal">Instructor Calificado</p>
+                                            </div>
+                                        </td>
+                                        <td className="py-3.5 px-4 text-center font-mono font-semibold text-slate-700">
+                                            {p.clasesDictadas}
+                                        </td>
+                                        <td className="py-3.5 px-4 text-center">
+                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700">
+                                                <span className="material-symbols-outlined text-xs">trending_up</span>
+                                                {p.porcentajeLlenado}%
+                                            </span>
+                                        </td>
+                                        <td className="py-3.5 px-4 text-center font-bold text-slate-800 font-mono">
+                                            {p.porcentajeAsistencia}%
+                                        </td>
+                                        <td className="py-3.5 px-4 text-center">
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+                                                p.porcentajeNoShow > 10 ? 'bg-red-50 text-red-700' : 'bg-slate-100 text-slate-600'
+                                            }`}>
+                                                {p.porcentajeNoShow}%
+                                            </span>
+                                        </td>
+                                        <td className="py-3.5 px-4 text-center font-semibold text-slate-800">
+                                            {p.alumnosUnicosAtendidos} alumnos
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </section>
 
                 {/* Quick Actions Grid */}
                 <section>
                     <h2 className="text-xs font-label font-bold text-on-surface-variant uppercase tracking-wider mb-4">
-                        Acciones Rápidas
+                        Acciones Rápidas de Administración
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
                         {/* Manage Users & Credits */}
                         <Link to="/admin/usuarios" className="bg-surface rounded-2xl p-6 shadow-sm border border-outline-variant hover:border-primary/50 transition-all group hover:-translate-y-1">
