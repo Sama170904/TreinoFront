@@ -543,12 +543,17 @@ a:hover {
   font-size: 0.875rem;
 }
 
-/* ─── Comprehensive Mobile Responsive Gutters & Spacing ─── */
+/* ─── Comprehensive Mobile Responsive Gutters, Spacing & Dock Clearance ─── */
 @media (max-width: 768px) {
-  /* Guaranteed 16px side padding on phone screens so cards never touch glass edges */
+  /* Guaranteed 16px side padding and 96px bottom scroll clearance for floating mobile navbar */
   body {
     padding-left: 1rem !important;
     padding-right: 1rem !important;
+    padding-bottom: 6rem !important;
+  }
+
+  #root {
+    padding-bottom: 6rem !important;
   }
 
   .page-container,
@@ -558,6 +563,7 @@ a:hover {
   .max-w-4xl {
     padding-left: 0.25rem !important;
     padding-right: 0.25rem !important;
+    padding-bottom: 2rem !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
@@ -566,6 +572,7 @@ a:hover {
   .min-h-screen {
     padding-left: 0.25rem !important;
     padding-right: 0.25rem !important;
+    padding-bottom: 6rem !important;
   }
 
   /* Card paddings on mobile */
@@ -617,6 +624,11 @@ a:hover {
   body {
     padding-left: 0.875rem !important;
     padding-right: 0.875rem !important;
+    padding-bottom: 6.5rem !important;
+  }
+
+  #root {
+    padding-bottom: 6.5rem !important;
   }
 
   .treino-card,
